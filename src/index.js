@@ -30,6 +30,13 @@ const auth_options = {
     method: 'POST'
 }
 
+const rs_options = {
+    ...options,
+    port: 3443,
+    hostname: 'rs.acme.com',
+    method: 'GET'
+};
+
 // HTTPS Only
 // Will only work if we listen on HTTP
 const requireHTTPS = (req, res, next) => {
@@ -47,21 +54,50 @@ app.use(bodyParser.urlencoded());
 app.post('/login', (req, res) => {
 	const cert = req.connection.getPeerCertificate();
     const username = req.body.username;
+    const password = req.body.password;
     if(req.client.authorized && username === cert.subject.CN) {
-        console.log("Requesting....");
 
-        const request = https.request(auth_options, (res) => {
-            console.log(res.statusCode);
-            res.on('data', (data) => {
-                process.stdout.write(data);
-                console.log(JSON.parse(data));
-            });
-
+        const payload = JSON.stringify({
+            grant_type: "password",
+            username: username,
+            password: password,
+            client_id: "test_client",
+            client_secret: "secret"
         });
+        const req_options = { ...auth_options,
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': payload.length
+            }
+        };
+        const request = https.request(req_options, (auth_res) => {
+            auth_res.on('data', (data) => {
+                const response = JSON.parse(data);
+                const req_options = {
+                    ...rs_options,
+                    path: `/${username}/files`,
+                    headers: {
+                        'Authorization': `Bearer ${response.access_token}`
+                    }
+                };
+                console.log(req_options);
+                const request = https.request(req_options, (rs_res) => {
+                    rs_res.on('data', (data) => {
+
+                        res.send(JSON.parse(data));
+                    });
+                });
+                request.end();
+                request.on('error', (e) => {
+                    console.error(e);
+                });
+
+            });
+        });
+        request.write(payload);
         request.end();
         request.on('error', (e) => {
             console.error(e);
-
         });
     }
     else {

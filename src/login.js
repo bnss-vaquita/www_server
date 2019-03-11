@@ -31,10 +31,7 @@ exports.login = (id) => `
         <form method="post" action="/login">
             <input name="username" value="${id}" type="hidden">
             <div>
-                Password
                 <input name="password" type="password">
-            </div>
-            <div>
                 <input type="submit" value="Submit">
             </div>
         </form>
