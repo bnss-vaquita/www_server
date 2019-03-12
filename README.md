@@ -1,5 +1,5 @@
 # www_server
-A simple OAuth2-compliant authentication server, built as part of the Building Networked Systems Security (EP2520) course @ KTH. 
+A simple web server with 2 factor authentication, built as part of the Building Networked Systems Security (EP2520) course @ KTH. 
 
 ## Setup
 Run `yarn` or `npm` in order to download the project dependencies. 
@@ -15,6 +15,8 @@ Add `www.acme.com` to your hosts file, and point it to `127.0.1.3`. Default HTTP
 
 ## Running
 In order to successfully run the server, you will need to run the authorization and resource server as well. Run it by executing `yarn server` or `npm run server`. 
+
+For client side auth, make sure to add a client key signed by the root cert to your browser. There should be a corresponding user in the database as well. 
 
 
 
