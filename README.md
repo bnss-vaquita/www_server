@@ -2,6 +2,8 @@
 A simple OAuth2-compliant authentication server, built as part of the Building Networked Systems Security (EP2520) course @ KTH. 
 
 ## Setup
+Run `yarn` or `npm` in order to download the project dependencies. 
+
 In order to run the server, you will need a public/private pair of RSA keys and a root certificate. The keys for this project are encrypted using black box. Follow their instructions to add yourself to the keychain, and contact a current admin in order re-incrypt the file so that you can decrypt them. 
 
 
