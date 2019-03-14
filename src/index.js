@@ -182,9 +182,7 @@ app.post('/', (req, res) => {
                     token,
                     (s_response) => {
                         const key = s_response.key;
-                        console.log(key);
                         const login = notp.totp.verify(totp, key);
-                        console.log(login);
 
                         if(login) {
                             // Request the file
@@ -192,7 +190,6 @@ app.post('/', (req, res) => {
                                 username,
                                 token,
                                 (f_response) => {
-                                    console.log(f_response);
                                     res.send(f_response);
                                 },
                                 (error_code) => {
