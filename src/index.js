@@ -53,6 +53,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
 const token_req = (username, password, success, error) => {
+    console.log("Requesting token for "+username);
     const payload = JSON.stringify({
         grant_type: "password",
         username: username,
@@ -69,7 +70,9 @@ const token_req = (username, password, success, error) => {
 
     // Request a token
     const request = https.request(req_options, (auth_res) => {
+        console.log("Sending request...");
         if (auth_res.statusCode != 200) {
+            console.log("Request failed!");
             error(auth_res.statusCode);
         } else {
             auth_res.on('data', (data) => {
@@ -82,6 +85,7 @@ const token_req = (username, password, success, error) => {
     request.end();
     request.on('error', (e) => {
         console.error(e);
+        error(400);
     });
 }
 
@@ -163,8 +167,8 @@ app.post('/', (req, res) => {
                 )
             },
             (error) => {
-            res.status(auth_res.statusCode)
-                .send("Login failed");
+                res.status(auth_res.statusCode)
+                    .send("Login failed");
             }
         );
 
@@ -182,7 +186,6 @@ app.post('/', (req, res) => {
                     (s_response) => {
                         const key = s_response.key;
                         const login = notp.totp.verify(totp, key);
-
                         if(login) {
                             // Request the file
                             file_req(
@@ -211,6 +214,7 @@ app.post('/', (req, res) => {
             },
             (error_code) => {
                 res.status(error_code)
+                    .send("Login failed!");
             }
         );
     }
