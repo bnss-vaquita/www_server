@@ -6,9 +6,9 @@ const login = require('./login');
 const notp = require('notp');
 
 const app = express();
-const ip = '127.0.1.3';
-const http_port = 3000;
-const https_port = 3443;
+const ip = process.env.IP || '127.0.1.1';
+const http_port = process.env.HTTP_PORT || 3000;
+const https_port = process.env.HTTPS_PORT || 3443;
 
 const KEY_DIR = process.env.KEY_DIR || 'keys';
 const CRT = process.env.CRT_NAME || 'www.acme.com.crt';
@@ -171,7 +171,6 @@ app.post('/', (req, res) => {
     }
     else {
         const totp = req.body.totp;
-
         token_req(
             username,
             password,
