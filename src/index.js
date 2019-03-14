@@ -158,7 +158,17 @@ app.post('/', (req, res) => {
                     username,
                     token,
                     (f_response) => {
-                        res.send(f_response);
+                        res.send(`
+                                    <html>
+                                        <body>
+                                            <center>
+                                            <h1>ACME CORPORATION</h1>
+                                            <h2>Super Secret Page</h2>
+                                            <p>Here are your files: ${f_response} </p>
+                                        </center>
+                                    </body>
+                                </html>
+                                        `);
                     },
                     (error_code) => {
                         res.status(error_code)
@@ -184,7 +194,9 @@ app.post('/', (req, res) => {
                     username,
                     token,
                     (s_response) => {
-                        const key = s_response.key;
+                        // Our key is base64-encoded
+                        const key = Buffer.from(s_response.key,'base64').toString('utf8');
+                        // Verify the key
                         const login = notp.totp.verify(totp, key);
                         if(login) {
                             // Request the file
@@ -192,7 +204,17 @@ app.post('/', (req, res) => {
                                 username,
                                 token,
                                 (f_response) => {
-                                    res.send(f_response);
+                                    res.send(`
+                                    <html>
+                                        <body>
+                                            <center>
+                                            <h1>ACME CORPORATION</h1>
+                                            <h2>Super Secret Page</h2>
+                                            <p>Here are your files: ${f_response} </p>
+                                        </center>
+                                    </body>
+                                </html>
+                                        `);
                                 },
                                 (error_code) => {
                                     res.status(error_code)
